@@ -4,32 +4,27 @@ server:
   
  # database 연동 설정
 spring:
-
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
-        
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
 #    각자 PC에 만들어놓은 Database이름을 써야 합니다.
     #url: jdbc:mysql://localhost:3306/db_bs?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     url: jdbc:mysql://localhost:3306/dbdb?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
 #    mysql에 생성한 사용자 계정 정보를 써야 합니다.
-    username: root
-    password: 04011604
-  thymeleaf:
-    cache: false
-
-  # spring data jpa 설정
+    username: testest
+    password: testpass1
   jpa:
     database: mysql
     show-sql: true
     hibernate:
       ddl-auto: update
-     
     properties:
       hibernate:
-        show-sql: true
-        format-sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+  thymeleaf:
+    cache: false
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/, file:src/main/resources/static/
+  h2:
+    console:
+      enabled: true
