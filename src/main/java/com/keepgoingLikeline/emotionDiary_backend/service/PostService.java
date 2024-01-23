@@ -1,9 +1,9 @@
 package com.keepgoingLikeline.emotionDiary_backend.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
@@ -27,12 +27,22 @@ public class PostService {
      */
     public boolean createPost(PostUploadDto postUploadDto){
         //TODO 로그인 확인 및 userEntity 받아 저장하기
-        UserEntity user = userRepository.findByUserId(123123L);
+        long userId = 123123L;
+        UserEntity user = userRepository.findByUserId(userId);
+        try{
+            if(user==null){
+                throw new Exception("User not found with id: "+userId);
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
 
         PostEntity newPost = new PostEntity();
         newPost.setUser(user);
         newPost.setEmotionType(postUploadDto.getEmotionType());
         newPost.setContent(postUploadDto.getContent());
+        newPost.setCreatedDate(LocalDate.now());
         
         postRepository.save(newPost);
         return true;

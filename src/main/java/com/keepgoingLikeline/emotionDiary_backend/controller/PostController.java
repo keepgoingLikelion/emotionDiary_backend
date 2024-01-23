@@ -42,9 +42,9 @@ public class PostController {
         } else{
             // try post save
             if (postService.createPost(postUploadDto)){
-                return new ResponseEntity<>("post success", HttpStatus.OK);
+                return new ResponseEntity<>("post success", HttpStatus.CREATED);
             } else{
-                return new ResponseEntity<>("post fail", HttpStatus.CREATED);
+                return new ResponseEntity<>("post fail", HttpStatus.UNAUTHORIZED);
             }
         }
     }
