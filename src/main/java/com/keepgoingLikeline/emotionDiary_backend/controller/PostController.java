@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.service.PostService;
 
@@ -46,6 +49,26 @@ public class PostController {
             } else{
                 return new ResponseEntity<>("post fail", HttpStatus.UNAUTHORIZED);
             }
+        }
+    }
+    
+    /**
+     * 기록 조회
+     * - postId로 -
+     * 
+     * postId만 파라미터로 받아 기록을 조회함
+     * 
+     * @param postId
+     * @return
+     */
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable Long postId) {
+        // TODO 유저로그인 확인 절차 필요
+        PostDto post = postService.getPostById(postId);
+        if(post==null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else{
+            return new ResponseEntity<>(post, HttpStatus.OK);
         }
     }
 }
