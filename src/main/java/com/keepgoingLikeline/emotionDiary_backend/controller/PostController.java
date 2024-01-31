@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.service.PostService;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/api/post")
@@ -22,10 +25,12 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    // TODO 유저확인은 전체적으로 Controller에서 하기(적절한 http status를 던져주기 위함)
+
     /**
      * 기록(post) 생성
      * 
-     * request bodyㄱ
+     * request body(postUploadDto)ㄱ
      * emtionType: int (required)
      * content: string (required)
      * 
@@ -33,9 +38,7 @@ public class PostController {
      * @return http state code
      */
     @PostMapping
-    public ResponseEntity<String> createPost(
-                @RequestBody PostUploadDto postUploadDto
-            ){
+    public ResponseEntity<String> createPost(@RequestBody PostUploadDto postUploadDto){
         // request body check
         if(postUploadDto.getEmotionType()==null || postUploadDto.getContent()==null){
             String msg = "post fail: ";
@@ -70,5 +73,42 @@ public class PostController {
         } else{
             return new ResponseEntity<>(post, HttpStatus.OK);
         }
+    }
+
+    /**
+     * 기록 삭제
+     * 
+     * postId를 파라미터로 받아 기록을 삭제함
+     * @param postId
+     * @return
+     */
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId){
+        // TODO 유저 본인 확인 절차 필요
+        boolean isSccess = postService.deletePost(postId);
+        if(isSccess){
+            return new ResponseEntity<>("delete sccess", HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>("Post not found with id " + postId, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * 기록 수정
+     * 
+     * postId를 파라미터로, 수정내용을 req body로 받아 기록을 수정함
+     * 
+     * request body(postUploadDto)ㄱ
+     * emtionType: int (required)
+     * content: string (required)
+     * 
+     * @param postId
+     * @param postUploadDto
+     * @return
+     */
+    @PutMapping("/{postId}")
+    public ResponseEntity<String> putPost(@PathVariable Long postId, @RequestBody PostUploadDto postUploadDto){
+        ResponseEntity<String> response = postService.putPost(postId, postUploadDto);
+        return response;
     }
 }

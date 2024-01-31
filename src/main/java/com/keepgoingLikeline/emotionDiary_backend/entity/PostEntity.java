@@ -39,7 +39,7 @@ public class PostEntity {
 
     private String content;
 
-	@OneToMany
+	@OneToMany(orphanRemoval = true)     // TODO 연관된 comment와 연결이 끊어질 때(보통 post 삭제 시) 자동으로 삭제를 해준다고 함. 테스트 필요
     @JoinColumn(name="postId")
 	private List<CommentEntity> comments = new ArrayList<>();
 }
