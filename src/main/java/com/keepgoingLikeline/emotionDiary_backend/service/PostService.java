@@ -12,12 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.keepgoingLikeline.emotionDiary_backend.dto.CommentDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
-import com.keepgoingLikeline.emotionDiary_backend.entity.CommentEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
 import com.keepgoingLikeline.emotionDiary_backend.repository.PostRepository;
@@ -30,6 +28,8 @@ public class PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    // post controller ----------------------------
 
     /**
      * 포스트 업로드 서비스
@@ -63,6 +63,8 @@ public class PostService {
         return true;
     }
 
+    // get controller ----------------------------------
+
     /**
      * 기록 조회 서비스
      * - postId로 -
@@ -82,7 +84,7 @@ public class PostService {
             return null;
         }
 
-        return convertPostEntity2PostDto(post);
+        return post.toPostDto();
     }
 
     /**
@@ -111,6 +113,8 @@ public class PostService {
         return convertPostEntities2PostsDto(postEntities);
     }
 
+    // del controller ---------------------------
+
     /**
      * 기록 삭제 서비스
      * @param postId
@@ -132,6 +136,8 @@ public class PostService {
         postRepository.delete(post);
         return true;
     }
+
+    // put controller ---------------------------
 
     /**
      * 기록 수정 서비스
@@ -177,37 +183,7 @@ public class PostService {
         return new ResponseEntity<>("put(fetch) sccess", HttpStatus.CREATED);
     }
 
-    /**
-     * postEntity -> postDto 내장 함수
-     * 
-     * @param postEntity
-     * @return
-     */
-    private PostDto convertPostEntity2PostDto(PostEntity postEntity){
-        // commentEntity -> commentDto = comments
-        List<CommentDto> comments = new ArrayList<>();
-        List<CommentEntity> commentsEntities = postEntity.getComments();
-        Iterator<CommentEntity> iter = commentsEntities.iterator();
-        while(iter.hasNext()){
-            CommentDto commentDto = new CommentDto();
-            CommentEntity commentEntity = iter.next();
-            commentDto.setCommentId(commentEntity.getCommentId());
-            commentDto.setContent(commentEntity.getContent());
-            comments.add(commentDto);
-        }
-        
-        // postEntity -> postDto
-        PostDto postDto = new PostDto();
-        postDto.setPostId(postEntity.getPostId());
-        postDto.setUserId(postEntity.getUser().getUserId());
-        postDto.setUsername(postEntity.getUser().getUsername());
-        postDto.setCreatedDate(postEntity.getCreatedDate());
-        postDto.setEmotionType(postEntity.getEmotionType());
-        postDto.setContent(postEntity.getContent());
-        postDto.setComments(comments);
-
-        return postDto;
-    }
+    // private method ---------------------------------
 
     /**
      * PostEntity List -> PostsDto 내장 함수
@@ -220,15 +196,7 @@ public class PostService {
 
         Iterator<PostEntity> iter = postEntities.iterator();
         while(iter.hasNext()){
-            PostSimpleDto postSimpleDto = new PostSimpleDto();
-            PostEntity postEntity = iter.next();
-            postSimpleDto.setPostId(postEntity.getPostId());
-            postSimpleDto.setUserId(postEntity.getUser().getUserId());
-            postSimpleDto.setUsername(postEntity.getUser().getUsername());
-            postSimpleDto.setCreatedDate(postEntity.getCreatedDate());
-            postSimpleDto.setEmotionType(postEntity.getEmotionType());
-            postSimpleDto.setContent(postEntity.getContent());
-            posts.add(postSimpleDto);
+            posts.add(iter.next().toPostSimpleDto());
         }
 
         return new PostsDto(posts);
