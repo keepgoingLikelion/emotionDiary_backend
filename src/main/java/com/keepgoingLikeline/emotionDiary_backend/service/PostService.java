@@ -6,13 +6,17 @@ import java.util.List;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.CommentDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
+import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
+import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.entity.CommentEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
@@ -79,6 +83,32 @@ public class PostService {
         }
 
         return convertPostEntity2PostDto(post);
+    }
+
+    /**
+     * 기록 List 조회 서비스
+     * - main page 용 -
+     * 
+     * @param category
+     * @param howMany
+     * @param pageNum
+     * @return
+     */
+    public PostsDto getPostList(List<Integer> category, Integer howMany, Integer pageNum){
+        List<PostEntity> postEntities = new ArrayList<>();
+
+        if(howMany==null){
+            postEntities = postRepository.findByCreatedDateAndEmotionTypeIn(LocalDate.now(), category);
+        } else{
+            Pageable pageable = PageRequest.of(pageNum, howMany);
+            postEntities = postRepository.findByCreatedDateAndEmotionTypeIn(
+                    LocalDate.now(),
+                    category,
+                    pageable
+                ).getContent();
+        }
+
+        return convertPostEntities2PostsDto(postEntities);
     }
 
     /**
@@ -180,6 +210,31 @@ public class PostService {
     }
 
     /**
+     * PostEntity List -> PostsDto 내장 함수
+     * 
+     * @param postEntities
+     * @return
+     */
+    private PostsDto convertPostEntities2PostsDto(List<PostEntity> postEntities){
+        List<PostSimpleDto> posts = new ArrayList<>();
+
+        Iterator<PostEntity> iter = postEntities.iterator();
+        while(iter.hasNext()){
+            PostSimpleDto postSimpleDto = new PostSimpleDto();
+            PostEntity postEntity = iter.next();
+            postSimpleDto.setPostId(postEntity.getPostId());
+            postSimpleDto.setUserId(postEntity.getUser().getUserId());
+            postSimpleDto.setUsername(postEntity.getUser().getUsername());
+            postSimpleDto.setCreatedDate(postEntity.getCreatedDate());
+            postSimpleDto.setEmotionType(postEntity.getEmotionType());
+            postSimpleDto.setContent(postEntity.getContent());
+            posts.add(postSimpleDto);
+        }
+
+        return new PostsDto(posts);
+    }
+
+    /**
      * postId를 통해 post 사용가능 여부를 체크하는 함수.
      * 
      * @param postId
@@ -190,13 +245,13 @@ public class PostService {
         // post가 존재하지 않는 경우 404
         PostEntity post = postRepository.findByPostId(postId);
         if(post==null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         
         // + 유저가 주어진 경우, post의 권한을 가지고 있지 않다면 403
         if(user!=null){
             if(user.getUserId()!=post.getUser().getUserId())
-                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);
     }

@@ -1,6 +1,9 @@
 package com.keepgoingLikeline.emotionDiary_backend.controller;
 
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,10 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
+import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.service.PostService;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -34,7 +39,7 @@ public class PostController {
      * emtionType: int (required)
      * content: string (required)
      * 
-     * @param postUploadDto
+     * @param postUploadDto post에 담길 내용 -> {emotionType, content}
      * @return http state code
      */
     @PostMapping
@@ -62,17 +67,55 @@ public class PostController {
      * postId만 파라미터로 받아 기록을 조회함
      * 
      * @param postId
-     * @return
+     * @return postDto
      */
     @GetMapping("/{postId}")
     public ResponseEntity<PostDto> getPostById(@PathVariable Long postId) {
         // TODO 유저로그인 확인 절차 필요
         PostDto post = postService.getPostById(postId);
         if(post==null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else{
             return new ResponseEntity<>(post, HttpStatus.OK);
         }
+    }
+
+    /**
+     * 기록 리스트 조회
+     * - main page 용 -
+     * 
+     * 현재 날짜로 저장되고 category list의 목록에 들어간 emotionTypes에 해당하는 기록(post)를 리턴합니다.
+     * req -> { post: PostSimpleDto[] }
+     * 
+     * @param category 조회할 기록의 emotionTypes
+     * @param howMany 리턴할 postList 길이
+     * @param pageNum howMany가 리스트 길이 일 때, 쪽 수
+     * @return { posts: PostSimpleDto[] }
+     */
+    @GetMapping("/postList")
+    public ResponseEntity<PostsDto> getPostList(
+        @RequestParam(value="category") String category,
+        @Param(value="howMany") Integer howMany,
+        @Param(value="pageNum") Integer pageNum
+    ){
+        // 요청 확인 및 포맷팅
+        if(howMany==null ^ pageNum==null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<Integer> cate = new ArrayList<>();
+        String[] tokens = category.split(",");
+        try{
+            for(String i: tokens){
+                cate.add(Integer.parseInt(i));
+            }
+        } catch(Exception e){
+            System.out.println(">>> can't get the emotionTypes\n" + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // get posts
+        PostsDto response = postService.getPostList(cate, howMany, pageNum);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -80,7 +123,7 @@ public class PostController {
      * 
      * postId를 파라미터로 받아 기록을 삭제함
      * @param postId
-     * @return
+     * @return http status code
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId){
@@ -103,8 +146,8 @@ public class PostController {
      * content: string (required)
      * 
      * @param postId
-     * @param postUploadDto
-     * @return
+     * @param postUploadDto post에 담길 내용 -> {emotionType, content}
+     * @return http status code
      */
     @PutMapping("/{postId}")
     public ResponseEntity<String> putPost(@PathVariable Long postId, @RequestBody PostUploadDto postUploadDto){
