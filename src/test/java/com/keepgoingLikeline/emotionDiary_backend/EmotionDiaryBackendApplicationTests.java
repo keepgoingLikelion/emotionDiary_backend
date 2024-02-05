@@ -2,6 +2,7 @@ package com.keepgoingLikeline.emotionDiary_backend;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ class EmotionDiaryBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
-		
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -109,6 +110,32 @@ public class PostService {
                     pageable
                 ).getContent();
         }
+
+        return convertPostEntities2PostsDto(postEntities);
+    }
+
+    /**
+     * 기록 List 조회 서비스
+     * - mypage 캘린더 용 -
+     * 
+     * @param year
+     * @param month
+     * @return
+     */
+    public PostsDto getmyposts(int year, int month){
+        UserEntity user = userRepository.findByUserId(123123L);
+
+        if(user==null){
+            return null;
+        }
+
+        // 주어진 월 이내로
+        LocalDate from = LocalDate.of(year, month, 01);
+        LocalDate to = month==12 ? 
+            LocalDate.of(year, 01, 01) : 
+            LocalDate.of(year, month+1, 01);
+
+        List<PostEntity> postEntities = postRepository.findByUserAndCreatedDateBetween(user, from, to.minusDays(1));
 
         return convertPostEntities2PostsDto(postEntities);
     }

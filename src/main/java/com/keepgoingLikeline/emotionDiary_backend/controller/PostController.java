@@ -119,6 +119,30 @@ public class PostController {
     }
 
     /**
+     * 기록 리스트 조회
+     * - mypage 캘린더 용 -
+     * 
+     * @param year
+     * @param month
+     * @return { posts: PostSimpleDto[] }
+     */
+    @GetMapping("/mypage")
+    public ResponseEntity<PostsDto> getMyposts(
+        @RequestParam(value="year") Integer year,
+        @RequestParam(value="month") Integer month
+    ){
+        if(month>12 || month <=0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        PostsDto posts = postService.getmyposts(year, month);
+        if(posts==null){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else{
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        }
+
+    }
+
+    /**
      * 기록 삭제
      * 
      * postId를 파라미터로 받아 기록을 삭제함

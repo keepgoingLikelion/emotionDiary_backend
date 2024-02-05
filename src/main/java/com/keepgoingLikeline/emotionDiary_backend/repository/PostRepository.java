@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
+import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
 
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
@@ -22,5 +23,11 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
         LocalDate createdDate,
         List<Integer> EmotionTypes,
         Pageable pageable
+    );
+
+    List<PostEntity> findByUserAndCreatedDateBetween(
+        UserEntity user,
+        LocalDate from,
+        LocalDate to
     );
 }
