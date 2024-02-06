@@ -1,5 +1,4 @@
 package com.keepgoingLikeline.emotionDiary_backend.entity;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -35,16 +34,12 @@ public class UserEntity implements UserDetails{
 	@Column(name="email", nullable=false, unique=true)
 	private String email;
 	
-	@Column(name="password")
-	private String password;
-	
 	@Column(name="nickname", unique=true)
 	private String nickname;
 	
 	@Builder
 	public UserEntity(String email, String password, String auth, String nickname) {
 		this.email = email;
-		this.password = password;
 		this.nickname = nickname;
 	}
 	
@@ -56,11 +51,6 @@ public class UserEntity implements UserDetails{
 	@Override
 	public String getUsername() {
 		return email;
-	}
-	
-	@Override
-	public String getPassword() {
-		return password;
 	}
 	
 	// 계정 만료 여부 반환
@@ -95,5 +85,11 @@ public class UserEntity implements UserDetails{
 		this.nickname = nickname;
 		
 		return this;
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
 	}
 }
