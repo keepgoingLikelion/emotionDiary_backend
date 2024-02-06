@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmojiInfoResponseDto {
-	private Long commentId;
+	private Long id;
 	private double x;
     private double y;
     private Long emojiIndex;

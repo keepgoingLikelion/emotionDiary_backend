@@ -22,5 +22,5 @@ public class PostDto {
     private String username;
     private Integer emotionType;
     private String content;
-    private List<EmojiInfoResponseDto> comments;
+    private List<EmojiInfoResponseDto> emojis;
 }

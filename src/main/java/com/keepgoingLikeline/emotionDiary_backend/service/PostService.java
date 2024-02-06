@@ -3,6 +3,7 @@ package com.keepgoingLikeline.emotionDiary_backend.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
@@ -38,17 +43,24 @@ public class PostService {
      * @return 성공?
      */
     public boolean createPost(PostUploadDto postUploadDto){
-        //TODO 로그인 확인 및 userEntity 받아 저장하기
+        // 현재 로그인된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = null;
 
-        // user 조회
-        long userId = 123123L;
-        UserEntity user = userRepository.findById(userId).orElse(null);
-        try{
-            if(user==null){
-                throw new Exception(">>> User not found with id: "+userId);
-            }
-        } catch(Exception e){
-            System.out.println(e.getMessage());
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
+            userEmail = (String) authentication.getPrincipal(); // For simple authentication scenarios
+        }
+
+        if (userEmail == null) {
+            System.out.println("User is not authenticated.");
+            return false;
+        }
+
+        UserEntity user = userRepository.findByEmail(userEmail).orElse(null);
+        if(user == null){
+            System.out.println("User not found with email: " + userEmail);
             return false;
         }
 
@@ -73,18 +85,21 @@ public class PostService {
      * @return
      */
     public PostDto getPostById(Long postId){
-        // post 조회
         PostEntity post = postRepository.findByPostId(postId);
-        try{
-            if(post==null){
-                throw new Exception(">>> Post not found with id: "+postId);
-            }
-        } catch(Exception e){
-            System.out.println(e.getMessage());
+        if(post == null){
             return null;
         }
 
-        return post.toPostDto();
+        PostDto postDto = post.toPostDto();
+
+        // EmojiEntity 리스트를 EmojiInfoResponseDto 리스트로 변환
+        List<EmojiInfoResponseDto> emojiInfoResponseDtos = post.getEmojis().stream()
+                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiIndex()))
+                .collect(Collectors.toList());
+
+        postDto.setEmojis(emojiInfoResponseDtos);
+
+        return postDto;
     }
 
     /**
@@ -96,6 +111,7 @@ public class PostService {
      * @param pageNum
      * @return
      */
+    /*
     public PostsDto getPostList(List<Integer> category, Integer howMany, Integer pageNum){
         List<PostEntity> postEntities = new ArrayList<>();
 
@@ -111,6 +127,19 @@ public class PostService {
         }
 
         return convertPostEntities2PostsDto(postEntities);
+    }
+    */
+    public List<PostSimpleDto> getAllPosts() {
+        List<PostEntity> postEntities = postRepository.findAll();
+        return postEntities.stream()
+                .map(post -> new PostSimpleDto(
+                        post.getPostId(),
+                        post.getUser().getId(),
+                        post.getCreatedDate(),
+                        post.getUser().getUsername(),
+                        post.getEmotionType(),
+                        post.getContent()))
+                .collect(Collectors.toList());
     }
 
     /**

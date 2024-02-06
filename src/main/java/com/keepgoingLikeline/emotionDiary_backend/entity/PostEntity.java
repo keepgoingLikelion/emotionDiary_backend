@@ -1,8 +1,8 @@
 package com.keepgoingLikeline.emotionDiary_backend.entity;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -43,10 +43,9 @@ public class PostEntity {
     private Integer emotionType;
 
     private String content;
-
-	@OneToMany(orphanRemoval = true)     // TODO 연관된 comment와 연결이 끊어질 때(보통 post 삭제 시) 자동으로 삭제를 해준다고 함. 테스트 필요
-    @JoinColumn(name="postId")
-	private List<EmojiEntity> comments = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "post")
+    private List<EmojiEntity> emojis = new ArrayList<>();
 
     /**
      * postEntity -> postDto
@@ -54,21 +53,7 @@ public class PostEntity {
      * @param postEntity
      * @return
      */
-    public PostDto toPostDto(){
-        // EmojiEntity -> EmojiInfoResponseDto = comments
-        List<EmojiInfoResponseDto> comments = new ArrayList<>();
-        List<EmojiEntity> commentsEntities = getComments();
-        Iterator<EmojiEntity> iter = commentsEntities.iterator();
-        while(iter.hasNext()){
-            EmojiInfoResponseDto emojiDto = new EmojiInfoResponseDto();
-            EmojiEntity commentEntity = iter.next();
-            emojiDto.setCommentId(commentEntity.getId());
-            emojiDto.setX(commentEntity.getX());
-            emojiDto.setY(commentEntity.getY());
-            comments.add(emojiDto);
-        }
-        
-        // postEntity -> postDto
+    public PostDto toPostDto() {
         PostDto postDto = new PostDto();
         postDto.setPostId(getPostId());
         postDto.setUserId(getUser().getId());
@@ -76,19 +61,23 @@ public class PostEntity {
         postDto.setCreatedDate(getCreatedDate());
         postDto.setEmotionType(getEmotionType());
         postDto.setContent(getContent());
-        postDto.setComments(comments);
+
+        // EmojiEntity 리스트를 EmojiInfoResponseDto 리스트로 변환
+        List<EmojiInfoResponseDto> emojiInfoResponseDtos = this.emojis.stream()
+                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiIndex()))
+                .collect(Collectors.toList());
+
+        postDto.setEmojis(emojiInfoResponseDtos);
 
         return postDto;
     }
-    
     /**
      * postEntity -> postSimpleDto
      * 
      * @return postSimpleDto
      */
-    public PostSimpleDto toPostSimpleDto(){
+    public PostSimpleDto toPostSimpleDto() {
         PostSimpleDto postSimpleDto = new PostSimpleDto();
-
         postSimpleDto.setPostId(getPostId());
         postSimpleDto.setUserId(getUser().getId());
         postSimpleDto.setUsername(getUser().getUsername());

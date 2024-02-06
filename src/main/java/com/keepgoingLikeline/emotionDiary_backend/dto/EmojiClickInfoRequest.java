@@ -14,4 +14,6 @@ public class EmojiClickInfoRequest {
 	private double x;
     private double y;
     private Long emojiIndex;
+    
+    private Long postId;
 }

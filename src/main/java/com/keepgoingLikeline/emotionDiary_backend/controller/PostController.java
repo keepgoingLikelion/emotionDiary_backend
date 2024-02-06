@@ -3,7 +3,6 @@ package com.keepgoingLikeline.emotionDiary_backend.controller;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,20 +42,19 @@ public class PostController {
      * @return http state code
      */
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody PostUploadDto postUploadDto){
-        // request body check
-        if(postUploadDto.getEmotionType()==null || postUploadDto.getContent()==null){
-            String msg = "post fail: ";
-            msg += postUploadDto.getEmotionType()==null ? "emotionType " : "";
-            msg += postUploadDto.getContent()==null ? "content " : "";
-            return new ResponseEntity<>(msg + "is null", HttpStatus.BAD_REQUEST);
-        } else{
-            // try post save
-            if (postService.createPost(postUploadDto)){
-                return new ResponseEntity<>("post success", HttpStatus.CREATED);
-            } else{
-                return new ResponseEntity<>("post fail", HttpStatus.UNAUTHORIZED);
-            }
+    public ResponseEntity<String> createPost(@RequestBody PostUploadDto postUploadDto) {
+        if (postUploadDto.getEmotionType() == null || postUploadDto.getContent() == null) {
+            String msg = "Post creation failed: ";
+            msg += postUploadDto.getEmotionType() == null ? "emotionType " : "";
+            msg += postUploadDto.getContent() == null ? "content " : "";
+            return new ResponseEntity<>(msg + "is required.", HttpStatus.BAD_REQUEST);
+        }
+
+        boolean isPostCreated = postService.createPost(postUploadDto);
+        if (isPostCreated) {
+            return new ResponseEntity<>("Post created successfully.", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
         }
     }
     
@@ -70,12 +68,11 @@ public class PostController {
      * @return postDto
      */
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable Long postId) {
-        // TODO 유저로그인 확인 절차 필요
+    public ResponseEntity<PostDto> getPostById(@PathVariable("postId") Long postId) {
         PostDto post = postService.getPostById(postId);
-        if(post==null){
+        if (post == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else{
+        } else {
             return new ResponseEntity<>(post, HttpStatus.OK);
         }
     }
@@ -92,12 +89,12 @@ public class PostController {
      * @param pageNum howMany가 리스트 길이 일 때, 쪽 수
      * @return { posts: PostSimpleDto[] }
      */
-    @GetMapping("/postList")
+    /*
+    @GetMapping("/list")
     public ResponseEntity<PostsDto> getPostList(
-        @RequestParam(value="category") String category,
-        @Param(value="howMany") Integer howMany,
-        @Param(value="pageNum") Integer pageNum
-    ){
+            @RequestParam("category") String category,
+            @RequestParam(value = "howMany", required = false) Integer howMany,
+            @RequestParam(value = "pageNum", required = false) Integer pageNum) {
         // 요청 확인 및 포맷팅
         if(howMany==null ^ pageNum==null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -117,6 +114,12 @@ public class PostController {
         PostsDto response = postService.getPostList(cate, howMany, pageNum);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    */
+    
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllPosts() {
+        return ResponseEntity.ok(postService.getAllPosts());
+    }
 
     /**
      * 기록 리스트 조회
@@ -128,9 +131,8 @@ public class PostController {
      */
     @GetMapping("/mypage")
     public ResponseEntity<PostsDto> getMyposts(
-        @RequestParam(value="year") Integer year,
-        @RequestParam(value="month") Integer month
-    ){
+            @RequestParam("year") Integer year,
+            @RequestParam("month") Integer month) {
         if(month>12 || month <=0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         PostsDto posts = postService.getmyposts(year, month);
@@ -150,12 +152,11 @@ public class PostController {
      * @return http status code
      */
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId){
-        // TODO 유저 본인 확인 절차 필요
-        boolean isSccess = postService.deletePost(postId);
-        if(isSccess){
-            return new ResponseEntity<>("delete sccess", HttpStatus.OK);
-        } else{
+    public ResponseEntity<String> deletePost(@PathVariable("postId") Long postId) {
+        boolean isSuccess = postService.deletePost(postId);
+        if (isSuccess) {
+            return new ResponseEntity<>("Delete success", HttpStatus.OK);
+        } else {
             return new ResponseEntity<>("Post not found with id " + postId, HttpStatus.NOT_FOUND);
         }
     }
@@ -174,7 +175,7 @@ public class PostController {
      * @return http status code
      */
     @PutMapping("/{postId}")
-    public ResponseEntity<String> putPost(@PathVariable Long postId, @RequestBody PostUploadDto postUploadDto){
+    public ResponseEntity<String> putPost(@PathVariable("postId") Long postId, @RequestBody PostUploadDto postUploadDto) {
         ResponseEntity<String> response = postService.putPost(postId, postUploadDto);
         return response;
     }
