@@ -1,21 +1,28 @@
 package com.keepgoingLikeline.emotionDiary_backend.entity;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Setter
 @Getter
-@Table(name = "comment_table")
-public class CommentEntity {
-    @Id
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="Emoji")
+@Entity
+public class EmojiEntity {
+	
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
-
-    private String content;
+    private Long id;
+	
+	private double x;
+    private double y;
+    private Long emojiIndex;
 }

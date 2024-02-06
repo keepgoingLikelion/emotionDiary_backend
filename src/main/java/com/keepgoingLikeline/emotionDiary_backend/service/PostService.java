@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class PostService {
 
         // user 조회
         long userId = 123123L;
-        UserEntity user = userRepository.findByUserId(userId);
+        UserEntity user = userRepository.findById(userId).orElse(null);
         try{
             if(user==null){
                 throw new Exception(">>> User not found with id: "+userId);
@@ -123,7 +122,7 @@ public class PostService {
      * @return
      */
     public PostsDto getmyposts(int year, int month){
-        UserEntity user = userRepository.findByUserId(123123L);
+        UserEntity user = userRepository.findById(123123L).orElse(null);
 
         if(user==null){
             return null;
@@ -176,7 +175,7 @@ public class PostService {
     public ResponseEntity<String> putPost(Long postId, PostUploadDto postUploadDto){
         // TODO user 조회
         long userId = 123123L;
-        UserEntity user = userRepository.findByUserId(userId);
+        UserEntity user = userRepository.findById(userId).orElse(null);
         try{
             if(user==null){
                 throw new Exception(">>> User not found with id: "+userId);
@@ -245,7 +244,7 @@ public class PostService {
         
         // + 유저가 주어진 경우, post의 권한을 가지고 있지 않다면 403
         if(user!=null){
-            if(user.getUserId()!=post.getUser().getUserId())
+            if(user.getId()!=post.getUser().getId())
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);

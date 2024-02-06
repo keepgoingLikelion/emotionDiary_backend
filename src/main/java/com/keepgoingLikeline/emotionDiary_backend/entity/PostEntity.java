@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import org.springframework.data.annotation.CreatedDate;
 
-import com.keepgoingLikeline.emotionDiary_backend.dto.CommentDto;
+import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 
@@ -46,7 +46,7 @@ public class PostEntity {
 
 	@OneToMany(orphanRemoval = true)     // TODO 연관된 comment와 연결이 끊어질 때(보통 post 삭제 시) 자동으로 삭제를 해준다고 함. 테스트 필요
     @JoinColumn(name="postId")
-	private List<CommentEntity> comments = new ArrayList<>();
+	private List<EmojiEntity> comments = new ArrayList<>();
 
     /**
      * postEntity -> postDto
@@ -55,22 +55,23 @@ public class PostEntity {
      * @return
      */
     public PostDto toPostDto(){
-        // commentEntity -> commentDto = comments
-        List<CommentDto> comments = new ArrayList<>();
-        List<CommentEntity> commentsEntities = getComments();
-        Iterator<CommentEntity> iter = commentsEntities.iterator();
+        // EmojiEntity -> EmojiInfoResponseDto = comments
+        List<EmojiInfoResponseDto> comments = new ArrayList<>();
+        List<EmojiEntity> commentsEntities = getComments();
+        Iterator<EmojiEntity> iter = commentsEntities.iterator();
         while(iter.hasNext()){
-            CommentDto commentDto = new CommentDto();
-            CommentEntity commentEntity = iter.next();
-            commentDto.setCommentId(commentEntity.getCommentId());
-            commentDto.setContent(commentEntity.getContent());
-            comments.add(commentDto);
+            EmojiInfoResponseDto emojiDto = new EmojiInfoResponseDto();
+            EmojiEntity commentEntity = iter.next();
+            emojiDto.setCommentId(commentEntity.getId());
+            emojiDto.setX(commentEntity.getX());
+            emojiDto.setY(commentEntity.getY());
+            comments.add(emojiDto);
         }
         
         // postEntity -> postDto
         PostDto postDto = new PostDto();
         postDto.setPostId(getPostId());
-        postDto.setUserId(getUser().getUserId());
+        postDto.setUserId(getUser().getId());
         postDto.setUsername(getUser().getUsername());
         postDto.setCreatedDate(getCreatedDate());
         postDto.setEmotionType(getEmotionType());
@@ -89,7 +90,7 @@ public class PostEntity {
         PostSimpleDto postSimpleDto = new PostSimpleDto();
 
         postSimpleDto.setPostId(getPostId());
-        postSimpleDto.setUserId(getUser().getUserId());
+        postSimpleDto.setUserId(getUser().getId());
         postSimpleDto.setUsername(getUser().getUsername());
         postSimpleDto.setCreatedDate(getCreatedDate());
         postSimpleDto.setEmotionType(getEmotionType());

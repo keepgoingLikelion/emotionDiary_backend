@@ -1,15 +1,11 @@
 server:
   address: localhost
   port: 8080
-  
- # database 연동 설정
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    각자 PC에 만들어놓은 Database이름을 써야 합니다.
-    #url: jdbc:mysql://localhost:3306/db_bs?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    url: jdbc:mysql://localhost:3306/dbdb?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
-#    mysql에 생성한 사용자 계정 정보를 써야 합니다.
+    url: jdbc:mysql://localhost:3306/dbdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: testest
     password: testpass1
   jpa:
@@ -20,11 +16,25 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-  thymeleaf:
-    cache: false
   web:
     resources:
       static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/, file:src/main/resources/static/
   h2:
     console:
       enabled: true
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 530706003071-io1i13m0l5a0eo195jakf8euidmh6iio.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope:
+              - email
+              - profile
+              
+jwt:
+  issuer: kim0615157@gmail.com
+  secret_key: emotionDiary_backend
