@@ -111,7 +111,6 @@ public class PostService {
      * @param pageNum
      * @return
      */
-    /*
     public PostsDto getPostList(List<Integer> category, Integer howMany, Integer pageNum){
         List<PostEntity> postEntities = new ArrayList<>();
 
@@ -127,19 +126,6 @@ public class PostService {
         }
 
         return convertPostEntities2PostsDto(postEntities);
-    }
-    */
-    public List<PostSimpleDto> getAllPosts() {
-        List<PostEntity> postEntities = postRepository.findAll();
-        return postEntities.stream()
-                .map(post -> new PostSimpleDto(
-                        post.getPostId(),
-                        post.getUser().getId(),
-                        post.getCreatedDate(),
-                        post.getUser().getUsername(),
-                        post.getEmotionType(),
-                        post.getContent()))
-                .collect(Collectors.toList());
     }
 
     /**

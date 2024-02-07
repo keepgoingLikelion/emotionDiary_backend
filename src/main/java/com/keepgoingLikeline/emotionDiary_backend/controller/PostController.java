@@ -89,8 +89,7 @@ public class PostController {
      * @param pageNum howMany가 리스트 길이 일 때, 쪽 수
      * @return { posts: PostSimpleDto[] }
      */
-    /*
-    @GetMapping("/list")
+    @GetMapping("/postList")
     public ResponseEntity<PostsDto> getPostList(
             @RequestParam("category") String category,
             @RequestParam(value = "howMany", required = false) Integer howMany,
@@ -113,12 +112,6 @@ public class PostController {
         // get posts
         PostsDto response = postService.getPostList(cate, howMany, pageNum);
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-    */
-    
-    @GetMapping("/list")
-    public ResponseEntity<?> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
     }
 
     /**
