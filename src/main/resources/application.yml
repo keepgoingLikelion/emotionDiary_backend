@@ -5,9 +5,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/dbdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: 
-    password: 
+    url: jdbc:mysql://localhost:3306/db_meolaeng?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: user_meolaeng
+    password: 1234
   jpa:
     show-sql: true
     hibernate:
@@ -30,8 +30,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 
-            client-secret: 
+            client-id: 530706003071-io1i13m0l5a0eo195jakf8euidmh6iio.apps.googleusercontent.com
+            client-secret: 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
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope:
               - email
