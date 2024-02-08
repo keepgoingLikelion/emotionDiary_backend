@@ -40,14 +40,17 @@ public class PostService {
      * 포스트 업로드 서비스
      * postUploadDto(emotionType, content)를 받아 새 게시물 저장
      * @param postUploadDto
-     * @return 성공?
+     * @return ResponseEntity<String>
      */
-    public boolean createPost(PostUploadDto postUploadDto){
+    public ResponseEntity<String> createPost(PostUploadDto postUploadDto){
         // 현재 로그인된 사용자 정보 가져오기
         UserEntity user = getUserEntity();
         if(user == null){
-            System.out.println("User not found");
-            return false;
+            return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
+        }
+
+        if(postRepository.findByUserAndCreatedDate(user, LocalDate.now())!=null){
+            return new ResponseEntity<>("already exist the today's post written by user", HttpStatus.CONFLICT);
         }
 
         // postUploadDto -> postEntity
@@ -58,7 +61,7 @@ public class PostService {
         newPost.setCreatedDate(LocalDate.now());
         
         postRepository.save(newPost);
-        return true;
+        return new ResponseEntity<>("Post created successfully.", HttpStatus.CREATED);
     }
 
     // get controller ----------------------------------

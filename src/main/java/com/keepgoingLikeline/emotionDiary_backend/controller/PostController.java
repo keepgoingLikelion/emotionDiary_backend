@@ -49,12 +49,7 @@ public class PostController {
             return new ResponseEntity<>(msg + "is required.", HttpStatus.BAD_REQUEST);
         }
 
-        boolean isPostCreated = postService.createPost(postUploadDto);
-        if (isPostCreated) {
-            return new ResponseEntity<>("Post created successfully.", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
-        }
+        return postService.createPost(postUploadDto);
     }
     
     /**
