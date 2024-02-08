@@ -30,4 +30,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
         LocalDate from,
         LocalDate to
     );
+
+    PostEntity findByUserAndCreatedDate(
+        UserEntity user,
+        LocalDate creatDate
+    );
 }

@@ -136,6 +136,24 @@ public class PostService {
         return convertPostEntities2PostsDto(postEntities);
     }
 
+    /**
+     * 사용자의 오늘 기록 조회 서비스
+     * 
+     * 사용자 정보 없음 -> 401
+     * 오늘 날짜의 post가 존재하지 않음 -> 404
+     * 
+     * @return
+     */
+    public ResponseEntity<PostSimpleDto> getMyPost(){
+        UserEntity user = getUserEntity();
+        if(user==null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        
+        PostEntity post = postRepository.findByUserAndCreatedDate(user, LocalDate.now());
+        if(post==null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(post.toPostSimpleDto(), HttpStatus.OK);
+    }
+
     // del controller ---------------------------
 
     /**

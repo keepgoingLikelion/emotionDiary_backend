@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
+import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.service.PostService;
@@ -133,6 +134,20 @@ public class PostController {
             return new ResponseEntity<>(posts, HttpStatus.OK);
         }
 
+    }
+
+    /**
+     * 사용자의 오늘 기록 조회
+     * 
+     * 요청을 보낸 사용자의 오늘 기록을 조회해 리턴합니다
+     * 사용자 정보 없음 -> 401
+     * 오늘 날짜의 post가 존재하지 않음 -> 404
+     * 
+     * @return PostSimpleDto
+     */
+    @GetMapping("/myPost")
+    public ResponseEntity<PostSimpleDto> getMyPost(){
+        return postService.getMyPost();
     }
 
     /**
