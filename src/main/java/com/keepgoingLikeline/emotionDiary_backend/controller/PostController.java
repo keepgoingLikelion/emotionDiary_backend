@@ -146,6 +146,23 @@ public class PostController {
     }
 
     /**
+     * 기록 리스트 조회
+     * - 그땐 머랭 용 -
+     * 
+     * 요청을 보낸 사용자가 이모지를 단 글을 emotionType만 필터링해서 리턴
+     * 사용자 정보 없음 -> 401
+     */
+    @GetMapping("/myLikePostList")
+    public ResponseEntity<PostsDto> getLikePostList(@RequestParam("emotionType") Integer emotionType){
+        PostsDto posts = postService.getLikePostList(emotionType);
+        if(posts==null){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else{
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        }
+    }
+
+    /**
      * 기록 삭제
      * 
      * postId를 파라미터로 받아 기록을 삭제함

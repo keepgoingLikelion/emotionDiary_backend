@@ -25,10 +25,10 @@ class EmotionDiaryBackendApplicationTests {
 	@Test
 	void contextLoads() {
 		UserEntity user = userRepository.findById(1L).orElse(null);
-		PostEntity post = postRepository.findByUserAndCreatedDate(user, LocalDate.now());
+		List<PostEntity> posts = postRepository.findByEmotionTypeAndEmojis_User(2, user);
 
 		try{
-			throw new Exception("======================\n"+post.getContent());
+			throw new Exception("======================\n"+posts.get(0).getContent()+"\n"+posts.get(1).getContent());
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 		}

@@ -157,6 +157,24 @@ public class PostService {
         return new ResponseEntity<>(post.toPostSimpleDto(), HttpStatus.OK);
     }
 
+    /**
+     * 기록 List 조회 서비스
+     * - 그땐 머랭 용 -
+     * 
+     * @param emotionType
+     * @return
+     */
+    public PostsDto getLikePostList(Integer emotionType){
+        UserEntity user = getUserEntity();
+        if(user == null){
+            return null;
+        }
+
+        List<PostEntity> postEntities = postRepository.findByEmotionTypeAndEmojis_User(emotionType, user);
+
+        return convertPostEntities2PostsDto(postEntities);
+    }
+
     // del controller ---------------------------
 
     /**

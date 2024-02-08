@@ -35,4 +35,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
         UserEntity user,
         LocalDate creatDate
     );
+
+    List<PostEntity> findByEmotionTypeAndEmojis_User(
+        Integer emotionType,
+        UserEntity user
+    );
 }
