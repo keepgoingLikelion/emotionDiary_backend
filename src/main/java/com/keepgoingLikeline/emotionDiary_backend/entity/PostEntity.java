@@ -44,7 +44,8 @@ public class PostEntity {
 
     private String content;
     
-    @OneToMany(mappedBy = "post")
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name="postId")
     private List<EmojiEntity> emojis = new ArrayList<>();
 
     /**

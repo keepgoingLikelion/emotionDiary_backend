@@ -24,12 +24,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/post")
-@CrossOrigin(originPatterns = "*", allowCredentials = "true")   //TODO 한번에 설정하는 방법 없음?
+@CrossOrigin(originPatterns = "*", allowCredentials = "true")
 public class PostController {
     @Autowired
     private PostService postService;
-
-    // TODO 유저확인은 전체적으로 Controller에서 하기(적절한 http status를 던져주기 위함)
 
     /**
      * 기록(post) 생성
@@ -146,12 +144,8 @@ public class PostController {
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") Long postId) {
-        boolean isSuccess = postService.deletePost(postId);
-        if (isSuccess) {
-            return new ResponseEntity<>("Delete success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Post not found with id " + postId, HttpStatus.NOT_FOUND);
-        }
+        ResponseEntity<String> response = postService.deletePost(postId);
+        return response;
     }
 
     /**
