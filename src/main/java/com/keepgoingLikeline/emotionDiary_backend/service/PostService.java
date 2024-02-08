@@ -111,7 +111,6 @@ public class PostService {
      * @param pageNum
      * @return
      */
-    /*
     public PostsDto getPostList(List<Integer> category, Integer howMany, Integer pageNum){
         List<PostEntity> postEntities = new ArrayList<>();
 
@@ -128,19 +127,6 @@ public class PostService {
 
         return convertPostEntities2PostsDto(postEntities);
     }
-    */
-    public List<PostSimpleDto> getAllPosts() {
-        List<PostEntity> postEntities = postRepository.findAll();
-        return postEntities.stream()
-                .map(post -> new PostSimpleDto(
-                        post.getPostId(),
-                        post.getUser().getId(),
-                        post.getCreatedDate(),
-                        post.getUser().getUsername(),
-                        post.getEmotionType(),
-                        post.getContent()))
-                .collect(Collectors.toList());
-    }
 
     /**
      * 기록 List 조회 서비스
@@ -151,17 +137,27 @@ public class PostService {
      * @return
      */
     public PostsDto getmyposts(int year, int month){
-        UserEntity user = userRepository.findById(123123L).orElse(null);
+    	
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = null;
 
-        if(user==null){
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
+            userEmail = (String) authentication.getPrincipal();
+        }
+
+        if (userEmail == null) {
             return null;
         }
 
-        // 주어진 월 이내로
-        LocalDate from = LocalDate.of(year, month, 01);
-        LocalDate to = month==12 ? 
-            LocalDate.of(year, 01, 01) : 
-            LocalDate.of(year, month+1, 01);
+        UserEntity user = userRepository.findByEmail(userEmail).orElse(null);
+        if(user == null){
+            return null;
+        }
+        
+        LocalDate from = LocalDate.of(year, month, 1);
+        LocalDate to = month == 12 ? LocalDate.of(year + 1, 1, 1) : LocalDate.of(year, month + 1, 1);
 
         List<PostEntity> postEntities = postRepository.findByUserAndCreatedDateBetween(user, from, to.minusDays(1));
 
