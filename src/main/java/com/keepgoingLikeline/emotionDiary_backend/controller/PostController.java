@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
+import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.service.PostService;
@@ -24,12 +25,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/post")
-@CrossOrigin(originPatterns = "*", allowCredentials = "true")   //TODO 한번에 설정하는 방법 없음?
+@CrossOrigin(originPatterns = "*", allowCredentials = "true")
 public class PostController {
     @Autowired
     private PostService postService;
-
-    // TODO 유저확인은 전체적으로 Controller에서 하기(적절한 http status를 던져주기 위함)
 
     /**
      * 기록(post) 생성
@@ -50,12 +49,7 @@ public class PostController {
             return new ResponseEntity<>(msg + "is required.", HttpStatus.BAD_REQUEST);
         }
 
-        boolean isPostCreated = postService.createPost(postUploadDto);
-        if (isPostCreated) {
-            return new ResponseEntity<>("Post created successfully.", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
-        }
+        return postService.createPost(postUploadDto);
     }
     
     /**
@@ -138,6 +132,37 @@ public class PostController {
     }
 
     /**
+     * 사용자의 오늘 기록 조회
+     * 
+     * 요청을 보낸 사용자의 오늘 기록을 조회해 리턴합니다
+     * 사용자 정보 없음 -> 401
+     * 오늘 날짜의 post가 존재하지 않음 -> 404
+     * 
+     * @return PostSimpleDto
+     */
+    @GetMapping("/myPost")
+    public ResponseEntity<PostSimpleDto> getMyPost(){
+        return postService.getMyPost();
+    }
+
+    /**
+     * 기록 리스트 조회
+     * - 그땐 머랭 용 -
+     * 
+     * 요청을 보낸 사용자가 이모지를 단 글을 emotionType만 필터링해서 리턴
+     * 사용자 정보 없음 -> 401
+     */
+    @GetMapping("/myLikePostList")
+    public ResponseEntity<PostsDto> getLikePostList(@RequestParam("emotionType") Integer emotionType){
+        PostsDto posts = postService.getLikePostList(emotionType);
+        if(posts==null){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else{
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        }
+    }
+
+    /**
      * 기록 삭제
      * 
      * postId를 파라미터로 받아 기록을 삭제함
@@ -146,12 +171,8 @@ public class PostController {
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") Long postId) {
-        boolean isSuccess = postService.deletePost(postId);
-        if (isSuccess) {
-            return new ResponseEntity<>("Delete success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Post not found with id " + postId, HttpStatus.NOT_FOUND);
-        }
+        ResponseEntity<String> response = postService.deletePost(postId);
+        return response;
     }
 
     /**

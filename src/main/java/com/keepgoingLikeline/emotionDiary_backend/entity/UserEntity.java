@@ -50,7 +50,7 @@ public class UserEntity implements UserDetails{
 	
 	@Override
 	public String getUsername() {
-		return email;
+		return nickname;
 	}
 	
 	// 계정 만료 여부 반환

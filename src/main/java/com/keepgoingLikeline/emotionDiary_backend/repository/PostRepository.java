@@ -30,4 +30,14 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
         LocalDate from,
         LocalDate to
     );
+
+    PostEntity findByUserAndCreatedDate(
+        UserEntity user,
+        LocalDate creatDate
+    );
+
+    List<PostEntity> findByEmotionTypeAndEmojis_User(
+        Integer emotionType,
+        UserEntity user
+    );
 }

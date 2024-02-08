@@ -40,28 +40,17 @@ public class PostService {
      * 포스트 업로드 서비스
      * postUploadDto(emotionType, content)를 받아 새 게시물 저장
      * @param postUploadDto
-     * @return 성공?
+     * @return ResponseEntity<String>
      */
-    public boolean createPost(PostUploadDto postUploadDto){
+    public ResponseEntity<String> createPost(PostUploadDto postUploadDto){
         // 현재 로그인된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
-        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
-            userEmail = (String) authentication.getPrincipal(); // For simple authentication scenarios
-        }
-
-        if (userEmail == null) {
-            System.out.println("User is not authenticated.");
-            return false;
-        }
-
-        UserEntity user = userRepository.findByEmail(userEmail).orElse(null);
+        UserEntity user = getUserEntity();
         if(user == null){
-            System.out.println("User not found with email: " + userEmail);
-            return false;
+            return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
+        }
+
+        if(postRepository.findByUserAndCreatedDate(user, LocalDate.now())!=null){
+            return new ResponseEntity<>("already exist the today's post written by user", HttpStatus.CONFLICT);
         }
 
         // postUploadDto -> postEntity
@@ -72,7 +61,7 @@ public class PostService {
         newPost.setCreatedDate(LocalDate.now());
         
         postRepository.save(newPost);
-        return true;
+        return new ResponseEntity<>("Post created successfully.", HttpStatus.CREATED);
     }
 
     // get controller ----------------------------------
@@ -137,21 +126,7 @@ public class PostService {
      * @return
      */
     public PostsDto getmyposts(int year, int month){
-    	
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
-        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
-            userEmail = (String) authentication.getPrincipal();
-        }
-
-        if (userEmail == null) {
-            return null;
-        }
-
-        UserEntity user = userRepository.findByEmail(userEmail).orElse(null);
+        UserEntity user = getUserEntity();
         if(user == null){
             return null;
         }
@@ -164,6 +139,42 @@ public class PostService {
         return convertPostEntities2PostsDto(postEntities);
     }
 
+    /**
+     * 사용자의 오늘 기록 조회 서비스
+     * 
+     * 사용자 정보 없음 -> 401
+     * 오늘 날짜의 post가 존재하지 않음 -> 404
+     * 
+     * @return
+     */
+    public ResponseEntity<PostSimpleDto> getMyPost(){
+        UserEntity user = getUserEntity();
+        if(user==null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        
+        PostEntity post = postRepository.findByUserAndCreatedDate(user, LocalDate.now());
+        if(post==null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(post.toPostSimpleDto(), HttpStatus.OK);
+    }
+
+    /**
+     * 기록 List 조회 서비스
+     * - 그땐 머랭 용 -
+     * 
+     * @param emotionType
+     * @return
+     */
+    public PostsDto getLikePostList(Integer emotionType){
+        UserEntity user = getUserEntity();
+        if(user == null){
+            return null;
+        }
+
+        List<PostEntity> postEntities = postRepository.findByEmotionTypeAndEmojis_User(emotionType, user);
+
+        return convertPostEntities2PostsDto(postEntities);
+    }
+
     // del controller ---------------------------
 
     /**
@@ -171,21 +182,28 @@ public class PostService {
      * @param postId
      * @return
      */
-    public boolean deletePost(Long postId){
-        // post 조회
-        PostEntity post = postRepository.findByPostId(postId);
+    public ResponseEntity<String> deletePost(Long postId){
+        UserEntity user = getUserEntity();
         try{
-            if(post==null){
-                throw new Exception(">>> Post not found with id: "+postId);
+            if(user==null){
+                throw new Exception(">>> User not found");
             }
         } catch(Exception e){
             System.out.println(e.getMessage());
-            return false;
+            return new ResponseEntity<>("user not found", HttpStatus.UNAUTHORIZED);
+        }
+        // 게시물 postId 확인
+        ResponseEntity<PostEntity> postRes = checkPost(postId, user);
+        if(postRes.getBody()==null){
+            return new ResponseEntity<>(
+                postRes.getStatusCode()==HttpStatus.NOT_FOUND ? "Post not found with id: "+postId : "user does not have permission",
+                postRes.getStatusCode()
+            );
         }
 
         // 삭제
-        postRepository.delete(post);
-        return true;
+        postRepository.delete(postRes.getBody());
+        return new ResponseEntity<>("delete sccess", HttpStatus.OK);
     }
 
     // put controller ---------------------------
@@ -198,22 +216,20 @@ public class PostService {
      * @return
      */
     public ResponseEntity<String> putPost(Long postId, PostUploadDto postUploadDto){
-        // TODO user 조회
-        long userId = 123123L;
-        UserEntity user = userRepository.findById(userId).orElse(null);
+        UserEntity user = getUserEntity();
         try{
             if(user==null){
-                throw new Exception(">>> User not found with id: "+userId);
+                throw new Exception(">>> User not found");
             }
         } catch(Exception e){
             System.out.println(e.getMessage());
-            return new ResponseEntity<>("user not found with id: "+userId, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("user not found", HttpStatus.UNAUTHORIZED);
         }
         // 게시물 postId 확인
         ResponseEntity<PostEntity> postRes = checkPost(postId, user);
         if(postRes.getBody()==null){
             return new ResponseEntity<>(
-                postRes.getStatusCode()==HttpStatus.NOT_FOUND ? "Post not found with id: "+postId : "user "+userId+" does not have permission",
+                postRes.getStatusCode()==HttpStatus.NOT_FOUND ? "Post not found with id: "+postId : "user does not have permission",
                 postRes.getStatusCode()
             );
         }
@@ -273,5 +289,25 @@ public class PostService {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    /**
+     * authentication를 기반으로 userEntity를 받아오는 함수
+     * 
+     * @return userEntity
+     */
+    private UserEntity getUserEntity(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
+            userEmail = (String) authentication.getPrincipal(); // For simple authentication scenarios
+        }
+        
+        if(userEmail==null) return null;
+
+        return userRepository.findByEmail(userEmail).orElse(null);
     }
 }
