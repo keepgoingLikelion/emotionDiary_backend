@@ -40,4 +40,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
         Integer emotionType,
         UserEntity user
     );
+
+    Long countByEmotionTypeAndEmojis_User(
+        Integer emotionType,
+        UserEntity user
+    );
 }

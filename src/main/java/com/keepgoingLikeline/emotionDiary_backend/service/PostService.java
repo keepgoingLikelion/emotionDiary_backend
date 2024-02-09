@@ -175,6 +175,24 @@ public class PostService {
         return convertPostEntities2PostsDto(postEntities);
     }
 
+    /**
+     * 그때 머랭 카운팅 서비스
+     * 
+     * @return
+     */
+    public List<Long> getLikeCountList(){
+        UserEntity user = getUserEntity();
+        if(user == null){
+            return null;
+        }
+
+        List<Long> countList = new ArrayList<>();
+        for(int emotionType=1; emotionType<7; emotionType++){
+            countList.add(postRepository.countByEmotionTypeAndEmojis_User(emotionType, user));
+        }
+        return countList;
+    }
+
     // del controller ---------------------------
 
     /**

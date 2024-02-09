@@ -163,6 +163,23 @@ public class PostController {
     }
 
     /**
+     * 사용자가 이모지를 단 포스트를 emotionType별로 카운트 해 배열로 리턴함
+     * 
+     * 사용자 정보 없음 -> 401
+     * @return List<Long>
+     */
+    @GetMapping("/myLikeCountList")
+    public ResponseEntity<List<Long>> getLikeCountList() {
+        List<Long> countList = postService.getLikeCountList();
+        if(countList==null){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else{
+            return new ResponseEntity<>(countList, HttpStatus.OK);
+        }
+    }
+    
+
+    /**
      * 기록 삭제
      * 
      * postId를 파라미터로 받아 기록을 삭제함
