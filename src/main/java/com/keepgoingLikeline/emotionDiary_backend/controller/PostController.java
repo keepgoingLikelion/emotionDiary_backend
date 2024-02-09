@@ -37,14 +37,14 @@ public class PostController {
      * emtionType: int (required)
      * content: string (required)
      * 
-     * @param postUploadDto post에 담길 내용 -> {emotionType, content}
+     * @param postUploadDto post에 담길 내용 -> {emojiType, content}
      * @return http state code
      */
     @PostMapping
     public ResponseEntity<String> createPost(@RequestBody PostUploadDto postUploadDto) {
-        if (postUploadDto.getEmotionType() == null || postUploadDto.getContent() == null) {
+        if (postUploadDto.getEmojiType() == null || postUploadDto.getContent() == null) {
             String msg = "Post creation failed: ";
-            msg += postUploadDto.getEmotionType() == null ? "emotionType " : "";
+            msg += postUploadDto.getEmojiType() == null ? "emojiType " : "";
             msg += postUploadDto.getContent() == null ? "content " : "";
             return new ResponseEntity<>(msg + "is required.", HttpStatus.BAD_REQUEST);
         }
@@ -149,12 +149,12 @@ public class PostController {
      * 기록 리스트 조회
      * - 그땐 머랭 용 -
      * 
-     * 요청을 보낸 사용자가 이모지를 단 글을 emotionType만 필터링해서 리턴
+     * 요청을 보낸 사용자가 이모지를 단 글을 emojiType만 필터링해서 리턴
      * 사용자 정보 없음 -> 401
      */
     @GetMapping("/myLikePostList")
-    public ResponseEntity<PostsDto> getLikePostList(@RequestParam("emotionType") Integer emotionType){
-        PostsDto posts = postService.getLikePostList(emotionType);
+    public ResponseEntity<PostsDto> getLikePostList(@RequestParam("emojiType") Integer emojiType){
+        PostsDto posts = postService.getLikePostList(emojiType);
         if(posts==null){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else{

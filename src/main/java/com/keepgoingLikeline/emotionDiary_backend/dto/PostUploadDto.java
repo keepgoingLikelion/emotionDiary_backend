@@ -12,6 +12,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class PostUploadDto {
-    private Integer emotionType;
+    private Integer emojiType;
     private String content;
 }

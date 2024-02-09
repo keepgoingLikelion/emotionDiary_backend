@@ -1,8 +1,6 @@
 package com.keepgoingLikeline.emotionDiary_backend;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ class EmotionDiaryBackendApplicationTests {
 	@Test
 	void contextLoads() {
 		UserEntity user = userRepository.findById(1L).orElse(null);
-		List<PostEntity> posts = postRepository.findByEmotionTypeAndEmojis_User(2, user);
+		List<PostEntity> posts = postRepository.findByEmojiTypeAndUser(2, user);
 
 		try{
 			throw new Exception("======================\n"+posts.get(0).getContent()+"\n"+posts.get(1).getContent());

@@ -38,7 +38,7 @@ public class UserEntity implements UserDetails{
 	private String nickname;
 	
 	@Builder
-	public UserEntity(String email, String password, String auth, String nickname) {
+	public UserEntity(String email, String nickname) {
 		this.email = email;
 		this.nickname = nickname;
 	}

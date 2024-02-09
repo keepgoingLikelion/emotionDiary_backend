@@ -15,13 +15,13 @@ import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
     PostEntity findByPostId(Long postId);
     
-    List<PostEntity> findByCreatedDateAndEmotionTypeIn(
+    List<PostEntity> findByCreatedDateAndEmojiTypeIn(
         LocalDate createdDate,
-        List<Integer> EmotionTypes
+        List<Integer> EmojiTypes
     );
-    Page<PostEntity> findByCreatedDateAndEmotionTypeIn(
+    Page<PostEntity> findByCreatedDateAndEmojiTypeIn(
         LocalDate createdDate,
-        List<Integer> EmotionTypes,
+        List<Integer> EmojiTypes,
         Pageable pageable
     );
 
@@ -36,13 +36,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
         LocalDate creatDate
     );
 
-    List<PostEntity> findByEmotionTypeAndEmojis_User(
-        Integer emotionType,
+    List<PostEntity> findByEmojiTypeAndUser(
+        Integer emojiType,
         UserEntity user
     );
 
-    Long countByEmotionTypeAndEmojis_User(
-        Integer emotionType,
+    Long countByEmojiTypeAndUser(
+        Integer emojiType,
         UserEntity user
     );
 }

@@ -18,20 +18,21 @@ import com.keepgoingLikeline.emotionDiary_backend.service.EmojiService;
 public class EmojiController {
 	
 	@Autowired
-	private EmojiService emotionService;
+	private EmojiService emojiService;
 	
 	@GetMapping("/emoji")
     public ResponseEntity<EmojiUrlResponse> getEmojis() {
 		
-        String[] emojiUrls = emotionService.getEmotionUrls();
-        EmojiUrlResponse response = new EmojiUrlResponse(emojiUrls);
+		String[] emojiTypeUrls = emojiService.getEmojiTypeUrls();
+        String[][] emojiUrls = emojiService.getEmojiUrls();
+        EmojiUrlResponse response = new EmojiUrlResponse(emojiTypeUrls, emojiUrls);
         
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 	
 	@PostMapping("/saveEmoji")
     public ResponseEntity<Void> saveImageClicks(@RequestBody EmojiClickInfoRequest request) {
-		emotionService.saveEmoji(request);
+		emojiService.saveEmoji(request);
 		
         return ResponseEntity.ok().build();
     }

@@ -18,6 +18,6 @@ public class PostSimpleDto {
     private Long userId;
     private LocalDate createdDate;
     private String username;
-    private Integer emotionType;
+    private Integer emojiType;
     private String content;
 }

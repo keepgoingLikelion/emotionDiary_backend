@@ -12,9 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
@@ -24,7 +21,6 @@ import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
 import com.keepgoingLikeline.emotionDiary_backend.repository.PostRepository;
-import com.keepgoingLikeline.emotionDiary_backend.repository.UserRepository;
 
 @Service
 public class PostService {
@@ -32,7 +28,7 @@ public class PostService {
     private PostRepository postRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     // post controller ----------------------------
 
@@ -44,7 +40,7 @@ public class PostService {
      */
     public ResponseEntity<String> createPost(PostUploadDto postUploadDto){
         // 현재 로그인된 사용자 정보 가져오기
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
         }
@@ -56,7 +52,7 @@ public class PostService {
         // postUploadDto -> postEntity
         PostEntity newPost = new PostEntity();
         newPost.setUser(user);
-        newPost.setEmotionType(postUploadDto.getEmotionType());
+        newPost.setEmojiType(postUploadDto.getEmojiType());
         newPost.setContent(postUploadDto.getContent());
         newPost.setCreatedDate(LocalDate.now());
         
@@ -104,10 +100,10 @@ public class PostService {
         List<PostEntity> postEntities = new ArrayList<>();
 
         if(howMany==null){
-            postEntities = postRepository.findByCreatedDateAndEmotionTypeIn(LocalDate.now(), category);
+            postEntities = postRepository.findByCreatedDateAndEmojiTypeIn(LocalDate.now(), category);
         } else{
             Pageable pageable = PageRequest.of(pageNum, howMany);
-            postEntities = postRepository.findByCreatedDateAndEmotionTypeIn(
+            postEntities = postRepository.findByCreatedDateAndEmojiTypeIn(
                     LocalDate.now(),
                     category,
                     pageable
@@ -126,7 +122,7 @@ public class PostService {
      * @return
      */
     public PostsDto getmyposts(int year, int month){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return null;
         }
@@ -148,7 +144,7 @@ public class PostService {
      * @return
      */
     public ResponseEntity<PostSimpleDto> getMyPost(){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user==null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         
         PostEntity post = postRepository.findByUserAndCreatedDate(user, LocalDate.now());
@@ -164,13 +160,13 @@ public class PostService {
      * @param emotionType
      * @return
      */
-    public PostsDto getLikePostList(Integer emotionType){
-        UserEntity user = getUserEntity();
+    public PostsDto getLikePostList(Integer emojiType){
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return null;
         }
 
-        List<PostEntity> postEntities = postRepository.findByEmotionTypeAndEmojis_User(emotionType, user);
+        List<PostEntity> postEntities = postRepository.findByEmojiTypeAndUser(emojiType, user);
 
         return convertPostEntities2PostsDto(postEntities);
     }
@@ -181,14 +177,14 @@ public class PostService {
      * @return
      */
     public List<Long> getLikeCountList(){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return null;
         }
 
         List<Long> countList = new ArrayList<>();
-        for(int emotionType=1; emotionType<7; emotionType++){
-            countList.add(postRepository.countByEmotionTypeAndEmojis_User(emotionType, user));
+        for(int emojiType=1; emojiType<7; emojiType++){
+            countList.add(postRepository.countByEmojiTypeAndUser(emojiType, user));
         }
         return countList;
     }
@@ -201,7 +197,7 @@ public class PostService {
      * @return
      */
     public ResponseEntity<String> deletePost(Long postId){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         try{
             if(user==null){
                 throw new Exception(">>> User not found");
@@ -234,7 +230,7 @@ public class PostService {
      * @return
      */
     public ResponseEntity<String> putPost(Long postId, PostUploadDto postUploadDto){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         try{
             if(user==null){
                 throw new Exception(">>> User not found");
@@ -258,8 +254,8 @@ public class PostService {
         }
         
         //수정
-        if(postUploadDto.getEmotionType()!=null){
-            post.setEmotionType(postUploadDto.getEmotionType());
+        if(postUploadDto.getEmojiType()!=null){
+            post.setEmojiType(postUploadDto.getEmojiType());
         }
         if(postUploadDto.getContent()!=null){
             post.setContent(postUploadDto.getContent());
@@ -307,25 +303,5 @@ public class PostService {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);
-    }
-
-    /**
-     * authentication를 기반으로 userEntity를 받아오는 함수
-     * 
-     * @return userEntity
-     */
-    private UserEntity getUserEntity(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
-        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
-            userEmail = (String) authentication.getPrincipal(); // For simple authentication scenarios
-        }
-        
-        if(userEmail==null) return null;
-
-        return userRepository.findByEmail(userEmail).orElse(null);
     }
 }

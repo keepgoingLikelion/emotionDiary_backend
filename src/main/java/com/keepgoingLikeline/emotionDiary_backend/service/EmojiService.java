@@ -23,20 +23,34 @@ public class EmojiService {
 	@Autowired
 	private PostRepository postRepository;
 	
-	public String[] getEmotionUrls() {
-        return new String[]{
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type.png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(1).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(2).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(3).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(4).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(5).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(6).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(7).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(8).png",
-            "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(9).png"
-        };
+	public String[][] getEmojiUrls() {
+		return new String[][]{
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type.png",
+	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(1).png"},
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(2).png",
+	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(3).png"},
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(4).png",
+	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(5).png"},
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(6).png",
+	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(7).png"},
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(8).png",
+	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(9).png"},
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(8).png",
+	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(9).png"}
+	    };
     }
+	
+	public String[] getEmojiTypeUrls() {
+		
+		return new String[] {
+			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type.png",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(1).png",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(2).png",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(3).png",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(4).png",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(5).png",
+		};
+	}
 	
 	public void saveEmoji(EmojiClickInfoRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

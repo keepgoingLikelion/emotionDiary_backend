@@ -40,7 +40,7 @@ public class PostEntity {
     @CreatedDate
     private LocalDate createdDate;
 
-    private Integer emotionType;
+    private Integer emojiType;
 
     private String content;
     
@@ -60,7 +60,7 @@ public class PostEntity {
         postDto.setUserId(getUser().getId());
         postDto.setUsername(getUser().getUsername());
         postDto.setCreatedDate(getCreatedDate());
-        postDto.setEmotionType(getEmotionType());
+        postDto.setEmojiType(getEmojiType());
         postDto.setContent(getContent());
 
         // EmojiEntity 리스트를 EmojiInfoResponseDto 리스트로 변환
@@ -83,7 +83,7 @@ public class PostEntity {
         postSimpleDto.setUserId(getUser().getId());
         postSimpleDto.setUsername(getUser().getUsername());
         postSimpleDto.setCreatedDate(getCreatedDate());
-        postSimpleDto.setEmotionType(getEmotionType());
+        postSimpleDto.setEmojiType(getEmojiType());
         postSimpleDto.setContent(getContent());
 
         return postSimpleDto;
