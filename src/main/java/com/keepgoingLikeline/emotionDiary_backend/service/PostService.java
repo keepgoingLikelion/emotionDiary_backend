@@ -12,9 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
@@ -24,7 +21,6 @@ import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
 import com.keepgoingLikeline.emotionDiary_backend.repository.PostRepository;
-import com.keepgoingLikeline.emotionDiary_backend.repository.UserRepository;
 
 @Service
 public class PostService {
@@ -32,7 +28,7 @@ public class PostService {
     private PostRepository postRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     // post controller ----------------------------
 
@@ -44,7 +40,7 @@ public class PostService {
      */
     public ResponseEntity<String> createPost(PostUploadDto postUploadDto){
         // 현재 로그인된 사용자 정보 가져오기
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return new ResponseEntity<>("Post creation failed due to authorization issues.", HttpStatus.UNAUTHORIZED);
         }
@@ -83,7 +79,7 @@ public class PostService {
 
         // EmojiEntity 리스트를 EmojiInfoResponseDto 리스트로 변환
         List<EmojiInfoResponseDto> emojiInfoResponseDtos = post.getEmojis().stream()
-                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiIndex()))
+                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiLink()))
                 .collect(Collectors.toList());
 
         postDto.setEmojis(emojiInfoResponseDtos);
@@ -126,7 +122,7 @@ public class PostService {
      * @return
      */
     public PostsDto getmyposts(int year, int month){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return null;
         }
@@ -148,7 +144,7 @@ public class PostService {
      * @return
      */
     public ResponseEntity<PostSimpleDto> getMyPost(){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user==null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         
         PostEntity post = postRepository.findByUserAndCreatedDate(user, LocalDate.now());
@@ -165,7 +161,7 @@ public class PostService {
      * @return
      */
     public PostsDto getLikePostList(Integer emotionType){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return null;
         }
@@ -181,7 +177,7 @@ public class PostService {
      * @return
      */
     public List<Long> getLikeCountList(){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         if(user == null){
             return null;
         }
@@ -201,7 +197,7 @@ public class PostService {
      * @return
      */
     public ResponseEntity<String> deletePost(Long postId){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         try{
             if(user==null){
                 throw new Exception(">>> User not found");
@@ -234,7 +230,7 @@ public class PostService {
      * @return
      */
     public ResponseEntity<String> putPost(Long postId, PostUploadDto postUploadDto){
-        UserEntity user = getUserEntity();
+        UserEntity user = userService.getUserEntity();
         try{
             if(user==null){
                 throw new Exception(">>> User not found");
@@ -307,25 +303,5 @@ public class PostService {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);
-    }
-
-    /**
-     * authentication를 기반으로 userEntity를 받아오는 함수
-     * 
-     * @return userEntity
-     */
-    private UserEntity getUserEntity(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
-        } else if (authentication != null && authentication.getPrincipal() instanceof String) {
-            userEmail = (String) authentication.getPrincipal(); // For simple authentication scenarios
-        }
-        
-        if(userEmail==null) return null;
-
-        return userRepository.findByEmail(userEmail).orElse(null);
     }
 }
