@@ -9,5 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmojiUrlResponse {
 	
-	String[] emojiUrls;
+	String[] emojiTypeUrls;
+	String[][] emojiUrls;
 }
