@@ -76,14 +76,6 @@ public class PostService {
         }
 
         PostDto postDto = post.toPostDto();
-
-        // EmojiEntity 리스트를 EmojiInfoResponseDto 리스트로 변환
-        List<EmojiInfoResponseDto> emojiInfoResponseDtos = post.getEmojis().stream()
-                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiLink()))
-                .collect(Collectors.toList());
-
-        postDto.setEmojis(emojiInfoResponseDtos);
-
         return postDto;
     }
 

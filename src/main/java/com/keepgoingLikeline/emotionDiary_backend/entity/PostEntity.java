@@ -65,7 +65,7 @@ public class PostEntity {
 
         // EmojiEntity 리스트를 EmojiInfoResponseDto 리스트로 변환
         List<EmojiInfoResponseDto> emojiInfoResponseDtos = this.emojis.stream()
-                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiLink()))
+                .map(emoji -> new EmojiInfoResponseDto(emoji.getId(), emoji.getX(), emoji.getY(), emoji.getEmojiUrl()))
                 .collect(Collectors.toList());
 
         postDto.setEmojis(emojiInfoResponseDtos);
@@ -85,6 +85,7 @@ public class PostEntity {
         postSimpleDto.setCreatedDate(getCreatedDate());
         postSimpleDto.setEmotionType(getEmotionType());
         postSimpleDto.setContent(getContent());
+        postSimpleDto.setEmojiCount(getEmojis().size());
 
         return postSimpleDto;
     }

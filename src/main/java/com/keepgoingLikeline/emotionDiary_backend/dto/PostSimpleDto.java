@@ -20,4 +20,5 @@ public class PostSimpleDto {
     private String username;
     private Integer emotionType;
     private String content;
+    private Integer emojiCount;
 }

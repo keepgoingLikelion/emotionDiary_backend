@@ -13,5 +13,5 @@ public class EmojiInfoResponseDto {
 	private Long id;
 	private double x;
     private double y;
-    private Long emojiLink;
+    private String emojiUrl;
 }
