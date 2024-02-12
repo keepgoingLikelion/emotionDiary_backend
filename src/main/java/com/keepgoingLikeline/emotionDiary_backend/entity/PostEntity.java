@@ -85,6 +85,7 @@ public class PostEntity {
         postSimpleDto.setCreatedDate(getCreatedDate());
         postSimpleDto.setEmotionType(getEmotionType());
         postSimpleDto.setContent(getContent());
+        postSimpleDto.setEmojiCount(getEmojis().size());
 
         return postSimpleDto;
     }
