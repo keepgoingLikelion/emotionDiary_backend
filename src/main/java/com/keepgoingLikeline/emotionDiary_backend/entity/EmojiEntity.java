@@ -26,7 +26,7 @@ public class EmojiEntity {
 	
 	private double x;
     private double y;
-    private Long emojiLink;
+    private String emojiUrl;
     
     @ManyToOne
     @JoinColumn(name = "userId")

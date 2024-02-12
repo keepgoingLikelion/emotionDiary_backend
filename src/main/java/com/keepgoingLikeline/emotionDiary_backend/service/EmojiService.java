@@ -64,7 +64,7 @@ public class EmojiService {
         EmojiEntity emojiEntity = new EmojiEntity();
         emojiEntity.setX(request.getX());
         emojiEntity.setY(request.getY());
-        emojiEntity.setEmojiLink(request.getEmojiLink());
+        emojiEntity.setEmojiUrl(request.getEmojiUrl());
         emojiEntity.setUser(user);
         emojiEntity.setPost(post);
 
