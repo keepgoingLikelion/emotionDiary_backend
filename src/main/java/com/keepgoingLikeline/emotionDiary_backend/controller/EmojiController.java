@@ -32,7 +32,7 @@ public class EmojiController {
 	
 	@PostMapping("/saveEmoji")
     public ResponseEntity<Void> saveImageClicks(@RequestBody EmojiClickInfoRequest request) {
-		
+		// TODO ResponseEntity<EmojiInfoResponseDto>로 바꾸기. (프론트 요청)
 		emojiService.saveEmoji(request);
 		
         return ResponseEntity.ok().build();
