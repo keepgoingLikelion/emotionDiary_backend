@@ -27,7 +27,7 @@ public class MainViewController {
 	public void mainView(HttpServletResponse httpServletResponse) {
 		UserEntity user = userService.getUserEntity();
 		if(user==null){
-			httpServletResponse.setHeader("Location", "http://localhost:8080/login");
+			httpServletResponse.setHeader("Location", "/login");
 		}
 		if(postRepository.findByUserAndCreatedDate(user, LocalDate.now())==null){
 			httpServletResponse.setHeader("Location", "http://localhost:5173/newPost");
