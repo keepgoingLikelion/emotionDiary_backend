@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
-import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostsDto;
 import com.keepgoingLikeline.emotionDiary_backend.service.PostService;
@@ -141,7 +140,7 @@ public class PostController {
      * @return PostSimpleDto
      */
     @GetMapping("/myPost")
-    public ResponseEntity<PostSimpleDto> getMyPost(){
+    public ResponseEntity<PostDto> getMyPost(){
         return postService.getMyPost();
     }
 

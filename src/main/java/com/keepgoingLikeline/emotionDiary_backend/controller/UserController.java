@@ -43,7 +43,8 @@ public class UserController {
     public ResponseEntity<String> updateNickname(@RequestBody UpdateNicknameRequest request) {
         if (userService.updateUserNickname(request.getNewNickname())) {
             return ResponseEntity.ok("Nickname updated success");
-        } else {
+        }
+        else {
             return ResponseEntity.badRequest().body("Failed to update nickname.");
         }
     }

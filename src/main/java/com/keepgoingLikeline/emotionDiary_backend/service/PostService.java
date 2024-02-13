@@ -133,14 +133,14 @@ public class PostService {
      * 
      * @return
      */
-    public ResponseEntity<PostSimpleDto> getMyPost(){
+    public ResponseEntity<PostDto> getMyPost(){
         UserEntity user = userService.getUserEntity();
         if(user==null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         
         PostEntity post = postRepository.findByUserAndCreatedDate(user, LocalDate.now());
         if(post==null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<>(post.toPostSimpleDto(), HttpStatus.OK);
+        return new ResponseEntity<>(post.toPostDto(), HttpStatus.OK);
     }
 
     /**
