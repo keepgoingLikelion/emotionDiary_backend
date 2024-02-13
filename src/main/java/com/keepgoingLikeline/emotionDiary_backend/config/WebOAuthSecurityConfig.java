@@ -90,11 +90,6 @@ public class WebOAuthSecurityConfig {
 	
 	@Bean
 	public OAuth2SuccessHandler oAuth2SuccessHandler() {
-		/*
-		return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository,
-				oAuth2AuthorizationRequestBasedOnCookieRepository(),
-				userService);
-				*/
 		return new OAuth2SuccessHandler(tokenProvider, refreshTokenService, userService);
 	}
 	

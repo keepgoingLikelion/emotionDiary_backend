@@ -12,6 +12,6 @@ import lombok.Setter;
 @ConfigurationProperties("jwt")
 public class JwtProperties {
 
-    private String issuer;
+	private String issuer;
     private String secretKey;
 }

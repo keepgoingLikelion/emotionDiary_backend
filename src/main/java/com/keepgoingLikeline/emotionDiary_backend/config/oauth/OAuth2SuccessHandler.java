@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+	public static final String ACCESS_TOKEN_COKIE_NAME = "access_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1);
 
@@ -41,21 +42,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         
-        // 리프레시 토큰을 데이터베이스에 저장하거나 업데이트
+        // refresg_token을 데이터베이스에 저장
         refreshTokenService.createOrUpdateRefreshToken(user.getId(), refreshToken);
 
-        // 쿠키에 리프레시 토큰 저장
+        // cookie에 refresg_token 저장
         CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, (int) REFRESH_TOKEN_DURATION.getSeconds());
-
-        // 쿠키에 액세스 토큰 저장
-        CookieUtil.addCookie(response, "accessToken", accessToken, (int) ACCESS_TOKEN_DURATION.getSeconds());
-
-        // 성공 후 리다이렉트될 URL 설정
-        String targetUrl = determineTargetUrl(request, response, authentication);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
-    }
-
-    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        return "/main";
+        // cookie에 access_token 저장
+        CookieUtil.addCookie(response, ACCESS_TOKEN_COKIE_NAME, accessToken, (int) ACCESS_TOKEN_DURATION.getSeconds());
     }
 }
