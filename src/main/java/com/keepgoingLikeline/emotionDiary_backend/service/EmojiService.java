@@ -52,7 +52,7 @@ public class EmojiService {
 		};
 	}
 	
-	public void saveEmoji(EmojiClickInfoRequest request) {
+	public EmojiEntity saveEmoji(EmojiClickInfoRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserEntity user = userRepository.findByEmail(email)
@@ -68,6 +68,6 @@ public class EmojiService {
         emojiEntity.setUser(user);
         emojiEntity.setPost(post);
 
-        emojiRepository.save(emojiEntity);
+        return emojiRepository.save(emojiEntity);
     }
 }
