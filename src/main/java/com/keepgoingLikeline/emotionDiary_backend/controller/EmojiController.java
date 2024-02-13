@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiClickInfoRequest;
+import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiUrlResponse;
 import com.keepgoingLikeline.emotionDiary_backend.service.EmojiService;
 
@@ -31,10 +32,10 @@ public class EmojiController {
     }
 	
 	@PostMapping("/saveEmoji")
-    public ResponseEntity<Void> saveImageClicks(@RequestBody EmojiClickInfoRequest request) {
+    public ResponseEntity<EmojiInfoResponseDto> saveImageClicks(@RequestBody EmojiClickInfoRequest request) {
 		
-		emojiService.saveEmoji(request);
+		EmojiInfoResponseDto response = EmojiInfoResponseDto.toDto(emojiService.saveEmoji(request));
 		
-        return ResponseEntity.ok().build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

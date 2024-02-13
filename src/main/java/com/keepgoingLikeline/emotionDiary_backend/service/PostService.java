@@ -3,7 +3,6 @@ package com.keepgoingLikeline.emotionDiary_backend.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostSimpleDto;
 import com.keepgoingLikeline.emotionDiary_backend.dto.PostUploadDto;
