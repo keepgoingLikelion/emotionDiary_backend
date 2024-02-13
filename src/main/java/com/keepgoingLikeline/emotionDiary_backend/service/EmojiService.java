@@ -25,30 +25,83 @@ public class EmojiService {
 	
 	public String[][] getEmojiUrls() {
 		return new String[][]{
-	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type.png",
-	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(1).png"},
-	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(2).png",
-	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(3).png"},
-	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(4).png",
-	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(5).png"},
-	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(6).png",
-	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(7).png"},
-	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(8).png",
-	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(9).png"},
-	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(8).png",
-	         "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(9).png"}
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        	"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg"},
+	        
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        		"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg"},
+	        
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg"},
+	        
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        				"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg"},
+	        
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        					"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg"},
+
+	        {"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg",
+	        						"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg"}
 	    };
     }
 	
 	public String[] getEmojiTypeUrls() {
 		
 		return new String[] {
-			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type.png",
-	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(1).png",
-	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(2).png",
-	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(3).png",
-	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(4).png",
-	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/%ED%91%9C%EC%A4%80type+(5).png",
+			"https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/HappinessType.svg",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SadnessType.svg",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/AngerType.svg",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/SensitiveType.svg",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/ConcernType.svg",
+	        "https://emotiondiary-bucket.s3.ap-northeast-2.amazonaws.com/TiredType.svg"
 		};
 	}
 	
