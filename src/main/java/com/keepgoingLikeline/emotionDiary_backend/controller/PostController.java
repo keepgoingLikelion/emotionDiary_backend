@@ -141,7 +141,7 @@ public class PostController {
      * @return PostSimpleDto
      */
     @GetMapping("/myPost")
-    public ResponseEntity<PostSimpleDto> getMyPost(){
+    public ResponseEntity<PostDto> getMyPost(){
         return postService.getMyPost();
     }
 
