@@ -9,8 +9,10 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import com.keepgoingLikeline.emotionDiary_backend.config.jwt.TokenProvider;
+import com.keepgoingLikeline.emotionDiary_backend.entity.RefreshToken;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
 import com.keepgoingLikeline.emotionDiary_backend.repository.RefreshTokenRepository;
+import com.keepgoingLikeline.emotionDiary_backend.service.RefreshTokenService;
 import com.keepgoingLikeline.emotionDiary_backend.service.UserService;
 import com.keepgoingLikeline.emotionDiary_backend.util.CookieUtil;
 
@@ -22,13 +24,12 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+	public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
-    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
+    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1);
 
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
+    private final RefreshTokenService refreshTokenService;
     private final UserService userService;
     
     @Override
@@ -37,14 +38,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         UserEntity user = userService.findByEmail(oAuth2User.getAttribute("email"));
 
         // 토큰 생성
-        String accessToken = tokenProvider.generateToken(user, Duration.ofHours(1));
-        String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(7));
+        String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
+        String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
+        
+        // 리프레시 토큰을 데이터베이스에 저장하거나 업데이트
+        refreshTokenService.createOrUpdateRefreshToken(user.getId(), refreshToken);
 
         // 쿠키에 리프레시 토큰 저장
-        CookieUtil.addCookie(response, "refreshToken", refreshToken, 60 * 60 * 24 * 7); // 7일
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, (int) REFRESH_TOKEN_DURATION.getSeconds());
 
-        CookieUtil.addCookie(response, "accessToken", accessToken, 60 * 60 * 24); // 24시간
+        // 쿠키에 액세스 토큰 저장
+        CookieUtil.addCookie(response, "accessToken", accessToken, (int) ACCESS_TOKEN_DURATION.getSeconds());
 
+        // 성공 후 리다이렉트될 URL 설정
         String targetUrl = determineTargetUrl(request, response, authentication);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }

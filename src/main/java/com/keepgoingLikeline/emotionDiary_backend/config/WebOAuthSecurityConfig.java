@@ -23,7 +23,7 @@ import com.keepgoingLikeline.emotionDiary_backend.config.jwt.TokenProvider;
 import com.keepgoingLikeline.emotionDiary_backend.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.keepgoingLikeline.emotionDiary_backend.config.oauth.OAuth2SuccessHandler;
 import com.keepgoingLikeline.emotionDiary_backend.config.oauth.OAuth2UserCustomService;
-import com.keepgoingLikeline.emotionDiary_backend.repository.RefreshTokenRepository;
+import com.keepgoingLikeline.emotionDiary_backend.service.RefreshTokenService;
 import com.keepgoingLikeline.emotionDiary_backend.service.UserService;
 
 @Configuration
@@ -34,7 +34,7 @@ public class WebOAuthSecurityConfig {
 	@Autowired
 	private TokenProvider tokenProvider;
 	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
+	private RefreshTokenService refreshTokenService;
 	@Autowired
 	private UserService userService;
 	
@@ -90,9 +90,12 @@ public class WebOAuthSecurityConfig {
 	
 	@Bean
 	public OAuth2SuccessHandler oAuth2SuccessHandler() {
+		/*
 		return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository,
 				oAuth2AuthorizationRequestBasedOnCookieRepository(),
 				userService);
+				*/
+		return new OAuth2SuccessHandler(tokenProvider, refreshTokenService, userService);
 	}
 	
 	@Bean

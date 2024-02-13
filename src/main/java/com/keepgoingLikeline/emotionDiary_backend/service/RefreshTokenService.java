@@ -17,4 +17,12 @@ public class RefreshTokenService {
 		return refreshTokenRepository.findByRefreshToken(refreshToken)
 				.orElseThrow(() -> new IllegalArgumentException("Unexpecte token"));
 	}
+	
+	public RefreshToken createOrUpdateRefreshToken(Long userId, String refreshTokenString) {
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByUserId(userId)
+            .map(existingToken -> existingToken.update(refreshTokenString))
+            .orElse(new RefreshToken(userId, refreshTokenString));
+        
+        return refreshTokenRepository.save(refreshTokenEntity);
+    }
 }
