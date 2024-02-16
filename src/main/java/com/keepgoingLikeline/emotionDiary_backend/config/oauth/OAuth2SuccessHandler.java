@@ -64,9 +64,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             return "/login";
         }
         if(postRepository.findByUserAndCreatedDate(user, LocalDate.now())==null){
-            return "http://localhost:5173/newPost";
+            return "https://keepgoinglikelion.github.io/meringue/newPost";
         } else{
-            return "http://localhost:5173/main";
+            return "https://keepgoinglikelion.github.io/meringue//main";
         }
     }
 }
