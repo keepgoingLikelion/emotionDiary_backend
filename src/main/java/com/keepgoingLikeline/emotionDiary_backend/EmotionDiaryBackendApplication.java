@@ -9,5 +9,4 @@ public class EmotionDiaryBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EmotionDiaryBackendApplication.class, args);
 	}
-
 }
