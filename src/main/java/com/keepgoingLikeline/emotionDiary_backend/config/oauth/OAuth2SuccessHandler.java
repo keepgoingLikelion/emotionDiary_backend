@@ -46,7 +46,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         
-        // refresg_token을 데이터베이스에 저장
+        // refresh_token을 데이터베이스에 저장
         refreshTokenService.createOrUpdateRefreshToken(user.getId(), refreshToken);
 
         // cookie에 refresg_token 저장
@@ -58,6 +58,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("Location", targetUrl);
         response.setStatus(302);
     }
+    
     private String getRedirectUrl(UserEntity user){
         if(user==null){
             return "/login";
@@ -67,6 +68,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         } else{
             return "http://localhost:5173/main";
         }
-    
     }
 }
