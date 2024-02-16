@@ -3,6 +3,7 @@ package com.keepgoingLikeline.emotionDiary_backend.config;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,9 @@ public class WebOAuthSecurityConfig {
 	private RefreshTokenService refreshTokenService;
 	@Autowired
 	private UserService userService;
+	
+	@Value("${front.url}")
+	private String frontUrl;
 	
 	@Bean
 	public WebSecurityCustomizer configure() { // 스프링 시큐리티 기능 비활성화
@@ -111,7 +115,7 @@ public class WebOAuthSecurityConfig {
 	@Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://keepgoinglikelion.github.io/meringue/")); // 허용할 오리진 설정
+        configuration.setAllowedOrigins(Arrays.asList(frontUrl)); // 허용할 오리진 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 허용할 HTTP 메소드 설정
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 		configuration.setAllowCredentials(true);

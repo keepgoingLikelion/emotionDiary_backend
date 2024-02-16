@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -37,6 +38,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Autowired
     PostRepository postRepository;
     
+    @Value("${front.url}")
+	private String frontUrl;
+    
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -64,9 +68,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             return "/login";
         }
         if(postRepository.findByUserAndCreatedDate(user, LocalDate.now())==null){
-            return "https://keepgoinglikelion.github.io/meringue/newPost";
+            return frontUrl + "newPost";
         } else{
-            return "https://keepgoinglikelion.github.io/meringue//main";
+            return frontUrl + "main";
         }
     }
 }
