@@ -11,11 +11,13 @@ public class WebConfig implements WebMvcConfigurer {
 	
 	@Value("${front.url}")
 	private String frontUrl;
+	@Value("${server.address}")
+	private String serverAddress;
 	
     @Override
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:8080", frontUrl)
+            .allowedOrigins("http://" + ("localhost".equals(serverAddress) ? "localhost:8080" : serverAddress), frontUrl)
             .allowCredentials(true)
             .exposedHeaders("authorization");
     }

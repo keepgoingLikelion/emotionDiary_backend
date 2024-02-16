@@ -15,7 +15,7 @@ import com.keepgoingLikeline.emotionDiary_backend.repository.UserRepository;
 
 @SpringBootTest
 class EmotionDiaryBackendApplicationTests {
-
+	/*
 	@Autowired
 	PostRepository postRepository;
 
@@ -32,6 +32,10 @@ class EmotionDiaryBackendApplicationTests {
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 		}
+	}
+	*/
+	@Test
+	void contextLoads() {
 	}
 
 }

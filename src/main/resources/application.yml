@@ -1,0 +1,122 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local: local, common
+      blue: blue, common
+      green: green, common
+      
+server:
+  env: blue
+  
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+      
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+          
+
+server:
+  port: 8080
+  address: localhost
+  
+serverName: local_server
+
+---
+#######################################################################
+
+spring:
+  config:
+    activate:
+      on-profile: blue
+      
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: http://15.152.239.74/login/oauth2/code/google
+
+server:
+  port: 8080
+  address: 15.152.239.74
+  
+serverName: blue_server
+
+---
+#######################################################################
+
+spring:
+  config:
+    activate:
+      on-profile: green
+      
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: http://15.152.239.74/login/oauth2/code/google
+            
+server:
+  port: 8081
+  address: 15.152.239.74
+  
+serverName: green_server
+
+---
+#######################################################################
+
+spring:
+  config:
+    activate:
+      on-profile: common
+      
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_meolaeng?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: user_meolaeng
+    password: 1234
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL57Dialect
+  #thymeleaf:
+    #cache: false
+    #check-template-location: true
+    #prefix: classpath:/templates/
+    #suffix: .html
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/, file:src/main/resources/static/
+  h2:
+    console:
+      enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+  
+
+jwt:
+  issuer: kim0615157@gmail.com
+  secret_key: emotionDiary_backend
+
+front:
+  url: https://keepgoinglikelion.github.io/meringue/
+  #url: http://localhost:5173/
