@@ -2,16 +2,17 @@ package com.keepgoingLikeline.emotionDiary_backend.config.oauth;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import com.keepgoingLikeline.emotionDiary_backend.config.jwt.TokenProvider;
-import com.keepgoingLikeline.emotionDiary_backend.entity.RefreshToken;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
-import com.keepgoingLikeline.emotionDiary_backend.repository.RefreshTokenRepository;
+import com.keepgoingLikeline.emotionDiary_backend.repository.PostRepository;
 import com.keepgoingLikeline.emotionDiary_backend.service.RefreshTokenService;
 import com.keepgoingLikeline.emotionDiary_backend.service.UserService;
 import com.keepgoingLikeline.emotionDiary_backend.util.CookieUtil;
@@ -32,6 +33,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
+
+    @Autowired
+    PostRepository postRepository;
     
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -49,5 +53,20 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, (int) REFRESH_TOKEN_DURATION.getSeconds());
         // cookie에 access_token 저장
         CookieUtil.addCookie(response, ACCESS_TOKEN_COKIE_NAME, accessToken, (int) ACCESS_TOKEN_DURATION.getSeconds());
+
+        String targetUrl = getRedirectUrl(user);
+        response.setHeader("Location", targetUrl);
+        response.setStatus(302);
+    }
+    private String getRedirectUrl(UserEntity user){
+        if(user==null){
+            return "/login";
+        }
+        if(postRepository.findByUserAndCreatedDate(user, LocalDate.now())==null){
+            return "http://localhost:5173/newPost";
+        } else{
+            return "http://localhost:5173/main";
+        }
+    
     }
 }
