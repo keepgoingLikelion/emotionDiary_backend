@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiClickInfoRequest;
+import com.keepgoingLikeline.emotionDiary_backend.dto.EmojiInfoResponseDto;
 import com.keepgoingLikeline.emotionDiary_backend.entity.EmojiEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.PostEntity;
 import com.keepgoingLikeline.emotionDiary_backend.entity.UserEntity;
@@ -19,7 +20,7 @@ public class EmojiService {
 	@Autowired
 	private EmojiRepository emojiRepository;
 	@Autowired
-	private UserRepository userRepository;
+	private UserService userService;
 	@Autowired
 	private PostRepository postRepository;
 	
@@ -106,10 +107,7 @@ public class EmojiService {
 	}
 	
 	public EmojiEntity saveEmoji(EmojiClickInfoRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+        UserEntity user = userService.getUserEntity();
 
         PostEntity post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + request.getPostId()));
@@ -121,6 +119,7 @@ public class EmojiService {
         emojiEntity.setUser(user);
         emojiEntity.setPost(post);
 
-        return emojiRepository.save(emojiEntity);
+        emojiRepository.save(emojiEntity);
+		return emojiEntity;
     }
 }
