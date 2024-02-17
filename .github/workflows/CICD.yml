@@ -69,7 +69,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
-          host: ${{ secrets.LIVE_MEOLAENG_IP }}
+          host: ${{ secrets.MEOLAENG_SERVER_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
