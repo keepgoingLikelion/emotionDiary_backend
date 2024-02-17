@@ -43,16 +43,17 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.MEOLAENG_SERVER_IP }}/env")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://***/env")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.MEOLAENG_SERVER_IP }}/env")
+            CURRENT_UPSTREAM=$(curl -s "http://***/env")
             echo "Detected current upstream: $CURRENT_UPSTREAM"
           else
             echo "Defaulting to green deployment"
             CURRENT_UPSTREAM=green
           fi
           echo "CURRENT_UPSTREAM=$CURRENT_UPSTREAM" >> $GITHUB_ENV
+
           if [ "$CURRENT_UPSTREAM" = "blue" ]; then
             echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
             echo "CURRENT_PORT=8081" >> $GITHUB_ENV
@@ -61,6 +62,8 @@ jobs:
             echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
             echo "CURRENT_PORT=8080" >> $GITHUB_ENV
             echo "STOPPED_PORT=8081" >> $GITHUB_ENV
+          fi
+
       - name: SSH to Server and Pull Latest Docker Image
         uses: appleboy/ssh-action@master
         with:
