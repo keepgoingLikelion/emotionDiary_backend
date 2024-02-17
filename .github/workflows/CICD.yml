@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: Set target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://***/env")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.MEOLAENG_SERVER_IP }}/env")
           echo $STATUS
           if [ $STATUS = 200 ]; then
             CURRENT_UPSTREAM=$(curl -s "http://***/env")
