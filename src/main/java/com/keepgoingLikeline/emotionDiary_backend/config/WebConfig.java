@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
 	
 	@Value("${front.url}")
 	private String frontUrl;
-	@Value("${server.address}")
+	@Value("${server.serverAddress}")
 	private String serverAddress;
 	
     @Override
