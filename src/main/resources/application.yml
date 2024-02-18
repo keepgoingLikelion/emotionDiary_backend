@@ -1,85 +1,8 @@
-spring:
-  profiles:
-    active: local
-    group:
-      local: local, common
-      blue: blue, common
-      green: green, common
-      
 server:
-  env: blue
-  
----
-
-spring:
-  config:
-    activate:
-      on-profile: local
-      
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
-          
-
-server:
+  address: localhost
   port: 8080
-  serverAddress: localhost
-  
-serverName: local_server
-
----
-#######################################################################
 
 spring:
-  config:
-    activate:
-      on-profile: blue
-      
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            redirect-uri: http://15.152.239.74/login/oauth2/code/google
-
-server:
-  port: 8080
-  serverAddress: 15.152.239.74
-  
-serverName: blue_server
-
----
-#######################################################################
-
-spring:
-  config:
-    activate:
-      on-profile: green
-      
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            redirect-uri: http://15.152.239.74/login/oauth2/code/google
-            
-server:
-  port: 8081
-  serverAddress: 15.152.239.74
-  
-serverName: green_server
-
----
-#######################################################################
-
-spring:
-  config:
-    activate:
-      on-profile: common
-      
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db_meolaeng?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -101,6 +24,7 @@ spring:
   h2:
     console:
       enabled: true
+  
   security:
     oauth2:
       client:
@@ -108,14 +32,14 @@ spring:
           google:
             client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
             client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope:
               - email
               - profile
-
 jwt:
   issuer: kim0615157@gmail.com
   secret_key: emotionDiary_backend
-
+  
 front:
-  url: https://keepgoinglikelion.github.io/meringue/
-  #url: http://localhost:5173/
+  #url: https://keepgoinglikelion.github.io/meringue/
+  url: http://localhost:5173/
